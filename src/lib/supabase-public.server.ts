@@ -1,0 +1,26 @@
+import { createClient } from "@supabase/supabase-js";
+
+import type { Database } from "@/integrations/supabase/types";
+
+/** Publishable-key client for public, read-only server-side reads (RLS applies as anon). */
+export function publicSupabase() {
+  const url = process.env["SUPABASE_URL"]!;
+  const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
+  return createClient<Database>(url, key, {
+    auth: { persistSession: false, autoRefreshToken: false },
+    global: {
+      fetch: (input, init) => {
+        const headers = new Headers(init?.headers);
+        if (key.startsWith("sb_") && headers.get("Authorization") === `Bearer ${key}`) {
+          headers.delete("Authorization");
+        }
+        headers.set("apikey", key);
+        return fetch(input, { ...init, headers });
+      },
+    },
+  });
+}
+
+export function publicStorageUrl(path: string): string {
+  return `${process.env["SUPABASE_URL"]}/storage/v1/object/public/biryani-photos/${path}`;
+}
