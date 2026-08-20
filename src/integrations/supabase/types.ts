@@ -99,6 +99,58 @@ export type Database = {
           },
         ]
       }
+      city_tallies: {
+        Row: {
+          city_id: string
+          last_vote_at: string | null
+          rating_count: number
+          rating_sum: number
+          recent_vote_count: number
+          updated_at: string
+          vote_count: number
+        }
+        Insert: {
+          city_id: string
+          last_vote_at?: string | null
+          rating_count?: number
+          rating_sum?: number
+          recent_vote_count?: number
+          updated_at?: string
+          vote_count?: number
+        }
+        Update: {
+          city_id?: string
+          last_vote_at?: string | null
+          rating_count?: number
+          rating_sum?: number
+          recent_vote_count?: number
+          updated_at?: string
+          vote_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "city_tallies_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: true
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "city_tallies_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: true
+            referencedRelation: "city_rankings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "city_tallies_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: true
+            referencedRelation: "city_stats"
+            referencedColumns: ["city_id"]
+          },
+        ]
+      }
       city_votes: {
         Row: {
           city_id: string
@@ -558,6 +610,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      recount_city: { Args: { _city_id: string }; Returns: undefined }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
