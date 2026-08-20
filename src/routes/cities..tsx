@@ -5,7 +5,7 @@ import { EmptyState } from "@/components/empty-state";
 import { formatScore, rankLabel } from "@/lib/format";
 import { cityQuery } from "@/lib/queries";
 
-export const Route = createFileRoute("/cities/$slug")({
+export const Route = createFileRoute("/cities/")({
   loader: async ({ context, params }) => {
     const city = await context.queryClient.ensureQueryData(cityQuery(params.slug));
     if (!city) throw notFound();
