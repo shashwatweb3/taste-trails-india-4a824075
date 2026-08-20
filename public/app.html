@@ -1071,7 +1071,8 @@ const Share = {
   open(){
     const cityId = App.cityId||"lucknow", catId = App.categoryId||"biryani";
     const mine = Data.myRanking(cityId, catId), comm = Data.getCityRanking(cityId, catId);
-    const rows = mine.length?mine:comm.map(r=>({name:r.name, score:r.rawAverage, rank:r.rank}));
+    const rest = comm.filter(c=>!mine.some(m=>m.id===c.id)).map(r=>({id:r.id, name:r.name, score:r.rawAverage}));
+    const rows = mine.length ? mine.concat(rest) : rest;
     const total = Data.myScoreTotal(cityId, catId);
     this.ctx = { cityId, catId, rows, total, mine:mine.length>0 };
     this.draw();
@@ -1115,14 +1116,14 @@ const Share = {
     g.textAlign="center";
     if(mine){
       g.fillStyle="#8b90a8"; g.font="600 24px Inter, sans-serif";
-      g.fillText("MY SCORE", W/2, 1140);
+      g.fillText(this.ctx.total.rated+" / "+(this.ctx.total.max/10)+" RATED · MY SCORE", W/2, 1112);
       g.fillStyle="#f4ead8"; g.font="700 72px 'Playfair Display', Georgia, serif";
-      g.fillText(total.sum+" / "+total.max, W/2, 1216);
+      g.fillText(total.sum+" / "+total.max, W/2, 1186);
     }
     g.fillStyle="#c9a227"; g.font="italic 500 34px 'Playfair Display', Georgia, serif";
-    g.fillText('"'+this.verdict()+'"', W/2, mine?1272:1200);
+    g.fillText('"'+this.verdict()+'"', W/2, mine?1252:1180);
     g.fillStyle="#5a5f7a"; g.font="500 22px Inter, sans-serif";
-    g.fillText(CONFIG.product.tagline, W/2, H-70);
+    g.fillText(CONFIG.product.tagline, W/2, H-64);
   },
   text(){
     const { cityId, catId, rows, total, mine } = this.ctx;
